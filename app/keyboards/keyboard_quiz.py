@@ -5,8 +5,8 @@ import emoji
 
 
 
-def get_kb_quiz(words: list[list[str | None]], answer_id: int=None) -> (ReplyKeyboardMarkup | str | list[str]):
-    '''Возвращает клавиатуры с варианстами ответа'''
+def get_kb_quiz(words: list[list[str | None]], some_type: str, answer_id: int) -> (ReplyKeyboardMarkup | str | list[str]):
+    '''Возвращает клавиатуру с варианстами ответа'''
 
     id_main_list: int = randint(0, len(words) - 1) #id списка с правильным вариантом ответа 
 
@@ -25,7 +25,8 @@ def get_kb_quiz(words: list[list[str | None]], answer_id: int=None) -> (ReplyKey
         return wd
 
 
-    kb_quiz = ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder='выбери вариант ответа')
+    msg = some_type if some_type != 'NULL' else 'any'
+    kb_quiz = ReplyKeyboardMarkup(resize_keyboard=True, input_field_placeholder= 'type: ' + msg)
 
     main: str = words[id_main_list][id_main] #правильный вариант ответа
     main_list: list[str] = words[id_main_list].copy() #список с правильным вариантом ответа

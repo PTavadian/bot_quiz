@@ -3,7 +3,7 @@ from random import randint
 
 
 
-def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None]) -> list[list[str | None]]:
+def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None]) -> (list[list[str | None]] | str):
     '''Сортирует слова по типу'''
 
     #https://unicode.org/emoji/charts/full-emoji-list.html
@@ -35,13 +35,14 @@ def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None]) ->
 
                 len_words_with_type[column] = len(words_with_type[column])
 
-            elif c > 3:
-                if not 'NULL' in words_with_type:
-                    words_with_type['NULL'] = [words[i]]
-                else:
-                    words_with_type['NULL'].append(words[i])
+        if not row[-3] and not row[-2] and not row[-1]:
+            if not 'NULL' in words_with_type:
+                words_with_type['NULL'] = [words[i]]
+            else:
+                words_with_type['NULL'].append(words[i])
 
-                len_words_with_type['NULL'] = len(words_with_type['NULL'])
+            len_words_with_type['NULL'] = len(words_with_type['NULL'])
+
 
 
     list_type: list[str] = list() #список из ключей с учетом соотношения их количества
@@ -62,7 +63,7 @@ def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None]) ->
     for row in res:
         send_words.append(list(row))
 
-    return send_words
+    return send_words, some_type
 
 
 
@@ -70,7 +71,7 @@ def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None]) ->
 
 
 
-def filter(result: list[tuple[str | None]], emoji: tuple[str | None]) -> list[list[str]]:
+def filter(result: list[tuple[str | None]], emoji: tuple[str | None]) -> (list[list[str]] | str):
 
     #https://unicode.org/emoji/charts/full-emoji-list.html
 
@@ -95,7 +96,7 @@ def filter(result: list[tuple[str | None]], emoji: tuple[str | None]) -> list[li
             if column:
                 words[i].append(emoji[c] + column)
 
-    return words
+    return words, 'NULL'
 
 
 

@@ -36,7 +36,7 @@ async def start_quiz(message: types.Message, state: FSMContext):
 
     cmd = {'/quiz': None, '/quiz_any': None, '/quiz_test': None, '/answer_first': 0, '/answer_second': 1, '/answer_third': 2, '/answer_fourth' : 3,} 
     language_answer_id: int = cmd[message.text]
-    kb, lng_answer, main_list = get_kb_quiz(words, language_answer_id)
+    kb, lng_answer, main_list = get_kb_quiz(words[0], words[1], language_answer_id)
 
     words_all: list[str] = []
     msg_id_all: list[int] = []
@@ -99,7 +99,7 @@ async def quiz(message: types.Message, state: FSMContext):
         else:
             words: list[list[str]] = filter_sort(data['data_words'], data['data_emoji'])
 
-        kb, lng_answer, main_list = get_kb_quiz(words, data['language_answer_id'])
+        kb, lng_answer, main_list = get_kb_quiz(words[0], words[1], data['language_answer_id'])
 
         bot_msg_kb = await bot.send_message(message.from_user.id, emoji.emojize(lng_answer), reply_markup=kb)
 
