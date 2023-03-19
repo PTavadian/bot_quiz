@@ -3,7 +3,7 @@ from random import randint
 
 
 
-def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None]) -> (list[list[str | None]] | str):
+def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None], command: int | None=None) -> (list[list[str | None]] | str) | None:
     '''Сортирует слова по типу'''
 
     #https://unicode.org/emoji/charts/full-emoji-list.html
