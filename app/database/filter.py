@@ -50,11 +50,19 @@ def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None]) ->
         for u in range(len_words_with_type[o]):
             list_type.append(o)
 
-
-    some_type = list_type[randint(0, len(list_type) - 1)]
+    some_type: str = list_type[randint(0, len(list_type) - 1)]
     res = set()
+    count: int = 0
     while len(res) < 4: 
-        res.add(tuple(words_with_type[some_type][randint(0, len(words_with_type[some_type]) - 1)]))
+        row = words_with_type[some_type][randint(0, len(words_with_type[some_type]) - 1)]
+        if command:
+            if row[command - 1]:
+                res.add(tuple(row))
+            count += 1
+            if count > 1000:
+                return None
+        else:
+            res.add(tuple(row))
         if len(res) == len(words_with_type[some_type]):
             break
 
@@ -62,6 +70,7 @@ def filter_sort(get_words: list[tuple[str | None]], emoji: tuple[str | None]) ->
     send_words = []
     for row in res:
         send_words.append(list(row))
+
 
     return send_words, some_type
 

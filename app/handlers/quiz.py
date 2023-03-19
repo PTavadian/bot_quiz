@@ -26,15 +26,23 @@ async def start_quiz(message: types.Message, state: FSMContext):
     data_words: tuple[list[str]] = get_word_quiz('1' if command == '/quiz_test' else message.from_user.id, command)
     if not data_words:
         await bot.send_message(message.from_user.id, 'Сперва нужно загрузить .xlsx файл со своими словами')
+        await state.finish()
         return
 
+    cmd = {'/quiz': None, '/quiz_any': None, '/quiz_test': None, '/answer_first': 1, '/answer_second': 2, '/answer_third': 3, '/answer_fourth' : 4,} 
     data_emoji: tuple[str] = send_emoji('1' if command == '/quiz_test' else message.from_user.id)
     if command == '/quiz_any':
         words: list[list[str]] = filter(data_words, data_emoji)
+    elif command == '/answer_first' or command == '/answer_second' or command == '/answer_third' or command == '/answer_fourth':
+        words: list[list[str]] = filter_sort(data_words, data_emoji, cmd[message.text])
     else:
         words: list[list[str]] = filter_sort(data_words, data_emoji)
 
-    cmd = {'/quiz': None, '/quiz_any': None, '/quiz_test': None, '/answer_first': 0, '/answer_second': 1, '/answer_third': 2, '/answer_fourth' : 3,} 
+    if not words:
+        await bot.send_message(message.from_user.id, 'В вашей таблице нет выбранного языка') 
+        await state.finish()
+        return
+
     language_answer_id: int = cmd[message.text]
     kb, lng_answer, main_list = get_kb_quiz(words[0], words[1], language_answer_id)
 
@@ -55,7 +63,6 @@ async def start_quiz(message: types.Message, state: FSMContext):
         data['command'] = command
         data['data_words'] = data_words
         data['data_emoji'] = data_emoji
-        data['type_quiz'] = message.text
         data['language_answer_id'] = language_answer_id
 
     await FSMQuiz.quiz.set()
@@ -94,10 +101,19 @@ async def quiz(message: types.Message, state: FSMContext):
 
     if data['count'] - 1 <= 9:
 
-        if data['type_quiz'] == '/quiz_any':
+
+        cmd = {'/quiz': None, '/quiz_any': None, '/quiz_test': None, '/answer_first': 1, '/answer_second': 2, '/answer_third': 3, '/answer_fourth' : 4,} 
+        if data['command'] == '/quiz_any':
             words: list[list[str]] = filter(data['data_words'], data['data_emoji'])
+        elif data['command'] == '/answer_first' or data['command'] == '/answer_second' or data['command'] == '/answer_third' or data['command'] == '/answer_fourth':
+            words: list[list[str]] = filter_sort(data['data_words'], data['data_emoji'], cmd[data['command']])
         else:
             words: list[list[str]] = filter_sort(data['data_words'], data['data_emoji'])
+
+        if not words:
+            await bot.send_message(message.from_user.id, 'Ошибка, попробуйте еще раз') 
+            await state.finish()
+            return
 
         kb, lng_answer, main_list = get_kb_quiz(words[0], words[1], data['language_answer_id'])
 

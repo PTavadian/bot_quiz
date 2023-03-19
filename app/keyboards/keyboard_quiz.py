@@ -8,13 +8,17 @@ import emoji
 def get_kb_quiz(words: list[list[str | None]], some_type: str, answer_id: int) -> (ReplyKeyboardMarkup | str | list[str]):
     '''Возвращает клавиатуру с варианстами ответа'''
 
-    id_main_list: int = randint(0, len(words) - 1) #id списка с правильным вариантом ответа 
+    id_main_list: int = randint(0, len(words) - 1) 
 
     while True:
         id_main: int = randint(0, len(words[id_main_list]) - 1) #id правльного ответа lng_answer
 
-        if words[id_main_list][id_main] and id_main != answer_id:
-            break
+        if words[id_main_list][id_main]:
+            if answer_id:
+                if id_main != answer_id - 1:
+                    break
+            else:
+                break
 
     
     def any_str(row: list[str]) -> str:
@@ -35,7 +39,7 @@ def get_kb_quiz(words: list[list[str | None]], some_type: str, answer_id: int) -
         if i == id_main_list:
 
             if answer_id:
-                wd = row[answer_id]
+                wd = row[answer_id - 1]
                 
                 if not wd:
                     main = row.pop(id_main) 
@@ -44,12 +48,16 @@ def get_kb_quiz(words: list[list[str | None]], some_type: str, answer_id: int) -
             else:
                 main = row.pop(id_main) 
                 wd = any_str(row)
-
+                
             kb_quiz.add(KeyboardButton(emoji.emojize(wd)))
 
         else:
-            row.pop(id_main)
-            wd = any_str(row)
+            if answer_id:
+                wd = row[answer_id - 1]
+            else:
+                if id_main < len(row):
+                    row.pop(id_main)
+                wd = any_str(row)
             kb_quiz.add(KeyboardButton(emoji.emojize(wd)))
 
     return kb_quiz, main, main_list
