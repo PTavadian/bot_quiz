@@ -2,6 +2,7 @@
 
 #### Опрос 
 Этот бот поможет вам в изучении одного или нескольких иностранных языков. Он может формировать опрос на основе вашего __.xlsx__ файла. 
+
 <img src="images/2.jpg" 
     width="32%" height="32%" vspace="2" hspace="3"><img src="images/3.jpg" 
     width="32%" height="32%" vspace="2" hspace="3"><img src="images/4.jpg" 
